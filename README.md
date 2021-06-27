@@ -1,7 +1,7 @@
 # Windows-KeyLogger
 A KeyLogger is a program that runs in the background and keeps on recording user keyboard input into a local file.
 
-<pre>
+<pre style="align:center">
 
 ░█████╗░░░░░░░░░░░░░░░  ██╗░░██╗███████╗██╗░░░██╗██╗░░░░░░█████╗░░██████╗░░██████╗░███████╗██████╗░
 ██╔══██╗░░██╗░░░░██╗░░  ██║░██╔╝██╔════╝╚██╗░██╔╝██║░░░░░██╔══██╗██╔════╝░██╔════╝░██╔════╝██╔══██╗
