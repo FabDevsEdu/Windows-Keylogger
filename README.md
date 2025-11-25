@@ -19,8 +19,6 @@ A KeyLogger is a program that runs in the background and keeps on recording user
 </pre>
 
 <h3>Installation </h3>
-
-<b> ☠️☠️☠️☠️☠️ Warning Handle With Care ☠️☠️☠️☠️☠️ <br> This Program is dangerous (As it records user input)</b>
 <p>
 https://drive.google.com/file/d/1bCWdWeww7DOqQ1-L80ZoXVscAteVJ2Pp/view?usp=sharing
 </p>
